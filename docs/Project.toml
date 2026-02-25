@@ -1,0 +1,6 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DrawingDim = "3b4f1277-4f84-48a8-a8ec-5e08d2f3a5e9"
+
+[compat]
+Documenter = "1"

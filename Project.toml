@@ -1,0 +1,19 @@
+name = "DrawingDim"
+uuid = "3b4f1277-4f84-48a8-a8ec-5e08d2f3a5e9"
+version = "0.1.0"
+authors = ["Thanh <thanh@example.com>"]
+
+[deps]
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
+
+[compat]
+Plots = "1.41.6"
+RecipesBase = "1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
