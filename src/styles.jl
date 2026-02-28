@@ -35,7 +35,7 @@ function reset_dimstyle!()
     return _DIMSTYLE[]
 end
 
-function DIMSTYLE(; kwargs...)
+function set_dimstyle(; kwargs...)
     style = DimStyle(; kwargs...)
     return dimstyle!(style)
 end

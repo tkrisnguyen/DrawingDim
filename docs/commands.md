@@ -8,7 +8,7 @@ All points can be passed as `(x, y)` tuples or `Point2D`.
 Set active global style.
 
 ```julia
-DIMSTYLE(
+set_dimstyle(
     text_height=8.0,
     arrow_size=3.0,
     arrowhead_style=:small_open,

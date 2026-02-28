@@ -6,11 +6,11 @@ include("dimensions.jl")
 include("recipes.jl")
 
 export Point2D
-export DimStyle, DIMSTYLE, dimstyle!, current_dimstyle, reset_dimstyle!
+export DimStyle, set_dimstyle, dimstyle!, current_dimstyle, reset_dimstyle!
 export LinearDimension, AlignedDimension, AngularDimension, ArcDimension, CenterDimension, JoggedDimension, RadialDimension, DiameterDimension, OrdinateDimension
-export DIMLINEAR, DIMALIGNED, DIMANGULAR, DIMARC, DIMCENTER, DIMJOGGED, DIMRADIAL, DIMDIAMETER, DIMORDINATE, DIMBASELINE, DIMCONTINUE
-export DIMTOLERANCE
-export DIMLIMITS
+export dim_linear, dim_aligned, dim_angular, dim_arc, dim_center, dim_jogged, dim_radial, dim_diameter, dim_ordinate, dim_baseline, dim_continue
+export dim_tolerance
+export dim_limits
 export measure
 
 end

@@ -202,12 +202,12 @@ function _radial_text_position(start::Point2D, dim_dir::Point2D, style::DimStyle
     return start + side * style.text_height * n
 end
 
-function DIMTOLERANCE(value::Real; plus=nothing, minus=nothing, style::DimStyle=current_dimstyle())
+function dim_tolerance(value::Real; plus=nothing, minus=nothing, style::DimStyle=current_dimstyle())
     base_text = _format_dim_text(value, style)
     return _apply_tolerance(base_text, style; tol_plus=plus, tol_minus=minus)
 end
 
-function DIMLIMITS(nominal::Real, lower::Real, upper::Real; style::DimStyle=current_dimstyle())
+function dim_limits(nominal::Real, lower::Real, upper::Real; style::DimStyle=current_dimstyle())
     lower > upper && throw(ArgumentError("lower must be <= upper"))
     nominal < lower && throw(ArgumentError("nominal must be >= lower"))
     nominal > upper && throw(ArgumentError("nominal must be <= upper"))
@@ -227,7 +227,7 @@ measure(d::RadialDimension) = distance(d.center, d.point)
 measure(d::DiameterDimension) = distance(d.p1, d.p2)
 measure(d::OrdinateDimension) = d.axis === :x ? d.point.x - d.origin.x : d.point.y - d.origin.y
 
-function DIMLINEAR(p1, p2; orientation::Symbol=:auto, offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_linear(p1, p2; orientation::Symbol=:auto, offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     a = _pt(p1)
     b = _pt(p2)
 
@@ -261,7 +261,7 @@ function DIMLINEAR(p1, p2; orientation::Symbol=:auto, offset::Real=10.0, text=no
     return LinearDimension(a, b, ext1, ext2, dim1, dim2, tpos, dtext, style)
 end
 
-function DIMALIGNED(p1, p2; offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_aligned(p1, p2; offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     a = _pt(p1)
     b = _pt(p2)
 
@@ -283,7 +283,7 @@ function DIMALIGNED(p1, p2; offset::Real=10.0, text=nothing, tol_plus=nothing, t
     return AlignedDimension(a, b, ext1, ext2, dim1, dim2, tpos, dtext, style)
 end
 
-function DIMANGULAR(vertex, p1, p2; radius::Real=20.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_angular(vertex, p1, p2; radius::Real=20.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     v = _pt(vertex)
     a = _pt(p1)
     b = _pt(p2)
@@ -309,7 +309,7 @@ function DIMANGULAR(vertex, p1, p2; radius::Real=20.0, text=nothing, tol_plus=no
     return AngularDimension(v, a, b, float(radius), θ1, θ2, tpos, dtext, style)
 end
 
-function DIMARC(center, p1, p2; radius::Union{Nothing,Real}=nothing, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_arc(center, p1, p2; radius::Union{Nothing,Real}=nothing, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     c = _pt(center)
     a = _pt(p1)
     b = _pt(p2)
@@ -338,7 +338,7 @@ function DIMARC(center, p1, p2; radius::Union{Nothing,Real}=nothing, text=nothin
     return ArcDimension(c, a, b, r, θ1, θ2, tpos, dtext, style)
 end
 
-function DIMCENTER(center; size::Real=10.0, style::DimStyle=current_dimstyle())
+function dim_center(center; size::Real=10.0, style::DimStyle=current_dimstyle())
     c = _pt(center)
     half = float(size) / 2
     h1 = Point2D(c.x - half, c.y)
@@ -348,10 +348,10 @@ function DIMCENTER(center; size::Real=10.0, style::DimStyle=current_dimstyle())
     return CenterDimension(c, h1, h2, v1, v2, style)
 end
 
-function DIMJOGGED(p1, p2; orientation::Symbol=:auto, offset::Real=10.0, jog_size::Real=6.0, jog_fraction::Real=0.12, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_jogged(p1, p2; orientation::Symbol=:auto, offset::Real=10.0, jog_size::Real=6.0, jog_fraction::Real=0.12, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     a = _pt(p1)
     b = _pt(p2)
-    base = DIMLINEAR(a, b; orientation=orientation, offset=offset, style=style)
+    base = dim_linear(a, b; orientation=orientation, offset=offset, style=style)
 
     dim_vec = base.dim2 - base.dim1
     u = unit(dim_vec)
@@ -381,30 +381,30 @@ function _collect_points(points)
     return [_pt(p) for p in points]
 end
 
-function DIMBASELINE(base_point, points...; orientation::Symbol=:auto, offset::Real=10.0, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_baseline(base_point, points...; orientation::Symbol=:auto, offset::Real=10.0, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     base = _pt(base_point)
     others = _collect_points(points)
     isempty(others) && throw(ArgumentError("DIMBASELINE needs at least one target point"))
 
     dims = Vector{LinearDimension}(undef, length(others))
     for (index, target) in enumerate(others)
-        dims[index] = DIMLINEAR(base, target; orientation=orientation, offset=offset + (index - 1) * style.text_height, tol_plus=tol_plus, tol_minus=tol_minus, style=style)
+        dims[index] = dim_linear(base, target; orientation=orientation, offset=offset + (index - 1) * style.text_height, tol_plus=tol_plus, tol_minus=tol_minus, style=style)
     end
     return dims
 end
 
-    function DIMCONTINUE(start_point, points...; orientation::Symbol=:auto, offset::Real=10.0, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+    function dim_continue(start_point, points...; orientation::Symbol=:auto, offset::Real=10.0, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     chain = vcat([_pt(start_point)], _collect_points(points))
     length(chain) < 2 && throw(ArgumentError("DIMCONTINUE needs at least two points"))
 
     dims = Vector{LinearDimension}(undef, length(chain) - 1)
     for index in 1:(length(chain) - 1)
-        dims[index] = DIMLINEAR(chain[index], chain[index + 1]; orientation=orientation, offset=offset, tol_plus=tol_plus, tol_minus=tol_minus, style=style)
+        dims[index] = dim_linear(chain[index], chain[index + 1]; orientation=orientation, offset=offset, tol_plus=tol_plus, tol_minus=tol_minus, style=style)
     end
     return dims
 end
 
-    function DIMRADIAL(center, point; offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+    function dim_radial(center, point; offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     c = _pt(center)
     p = _pt(point)
     dir = p - c
@@ -422,7 +422,7 @@ end
     return RadialDimension(c, p, leader_end, tpos, dtext, style)
 end
 
-function DIMDIAMETER(center, point; text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_diameter(center, point; text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     c = _pt(center)
     p1 = _pt(point)
     dir = p1 - c
@@ -440,7 +440,7 @@ function DIMDIAMETER(center, point; text=nothing, tol_plus=nothing, tol_minus=no
     return DiameterDimension(c, p1, p2, tpos, dtext, style)
 end
 
-function DIMORDINATE(point; axis::Symbol=:x, origin=(0.0, 0.0), offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
+function dim_ordinate(point; axis::Symbol=:x, origin=(0.0, 0.0), offset::Real=10.0, text=nothing, tol_plus=nothing, tol_minus=nothing, style::DimStyle=current_dimstyle())
     p = _pt(point)
     o = _pt(origin)
 
